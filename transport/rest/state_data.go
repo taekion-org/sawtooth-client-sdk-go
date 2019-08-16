@@ -46,7 +46,7 @@ func (self *SawtoothClientTransportRest) GetState(address string) (*types.State,
 		return nil, err
 	}
 
-	return &types.State{Data: dataBytes, Address: address}, nil
+	return &types.State{Data: dataBytes, Address: address, Head: response.Head}, nil
 }
 
 // stateRestIterator extends commonRestIterator and implements the types.StateIterator interface.
@@ -79,7 +79,7 @@ func (self *stateRestIterator) UnmarshalData(bytes []byte) ([]interface{}, error
 		if err != nil {
 			return nil, err
 		}
-		result[i] = &types.State{Data: dataBytes, Address: item.Address}
+		result[i] = &types.State{Data: dataBytes, Address: item.Address, Head: response.Head}
 	}
 
 	return result, nil

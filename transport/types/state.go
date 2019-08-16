@@ -4,4 +4,5 @@ package types
 type State struct {
 	Data    []byte
 	Address string
+	Head	string
 }
