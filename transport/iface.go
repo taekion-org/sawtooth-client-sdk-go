@@ -28,5 +28,6 @@ type SawtoothClientTransport interface {
 
 	// Methods to retrieve state.
 	GetState(address string) (*types.State, error)
+	GetStateAtHead(address string, head string) (*types.State, error)
 	GetStateIterator(addressPrefix string, fetch int, reverse bool) types.StateIterator
 }
