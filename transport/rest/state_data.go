@@ -49,6 +49,33 @@ func (self *SawtoothClientTransportRest) GetState(address string) (*types.State,
 	return &types.State{Data: dataBytes, Address: address, Head: response.Head}, nil
 }
 
+// GetStateAtHead returns the state at the given address, at the given head.
+func (self *SawtoothClientTransportRest) GetStateAtHead(address string, head string) (*types.State, error) {
+	relativeUrl := &url.URL{Path: fmt.Sprintf("/state/%s", address)}
+
+	query := relativeUrl.Query()
+	query.Add("head", head)
+	relativeUrl.RawQuery = query.Encode()
+
+	data, err := self.doGetRequest(relativeUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	var response stateRestResponseSingle
+	err = json.Unmarshal(data, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	dataBytes, err := base64.StdEncoding.DecodeString(response.Data)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.State{Data: dataBytes, Address: address, Head: response.Head}, nil
+}
+
 // stateRestIterator extends commonRestIterator and implements the types.StateIterator interface.
 type stateRestIterator struct {
 	commonRestIterator
