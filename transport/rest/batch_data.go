@@ -62,7 +62,7 @@ func (self *batchRestIterator) UnmarshalData(bytes []byte) ([]interface{}, error
 
 	result := make([]interface{}, len(response.Data))
 	for i, item := range response.Data {
-		result[i] = item
+		result[i] = &item
 	}
 
 	return result, nil
