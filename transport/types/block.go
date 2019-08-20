@@ -12,7 +12,7 @@ type BlockHeader struct {
 
 // Block represents a Sawtooth block.
 type Block struct {
-	Batches         Batch       `json:"batches"`
+	Batches         []Batch       `json:"batches"`
 	Header          BlockHeader `json:"header"`
 	HeaderSignature string      `json:"header_signature"`
 }
