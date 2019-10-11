@@ -87,7 +87,7 @@ func (self *SawtoothClient) WaitBatch(batchId string, timeout int, pollInterval 
 		waitTime = int(time.Now().Unix() - startTime)
 
 		switch status {
-		case types.BATCH_STATUS_PENDING:
+		case types.BATCH_STATUS_PENDING, types.BATCH_STATUS_UNKNOWN:
 			if (timeout == 0) || (timeout != 0 && waitTime < timeout) {
 				continue
 			} else {
@@ -95,7 +95,7 @@ func (self *SawtoothClient) WaitBatch(batchId string, timeout int, pollInterval 
 			}
 		case types.BATCH_STATUS_COMMITTED:
 			return true, nil
-		case types.BATCH_STATUS_INVALID, types.BATCH_STATUS_UNKNOWN:
+		case types.BATCH_STATUS_INVALID:
 			return false, fmt.Errorf("Batch %s is in status %s", batchId, status)
 		}
 	}
