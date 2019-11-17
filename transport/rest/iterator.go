@@ -3,7 +3,6 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/taekion-org/sawtooth-client-sdk-go/transport/types"
 	"net/url"
 )
 
@@ -17,6 +16,11 @@ type commonRestPagingData struct {
 	} `json:"paging"`
 }
 
+// restIteratorImpl must be implemented by all rest iterators.
+type restIteratorImpl interface {
+	UnmarshalData(bytes []byte) ([]interface{}, error)
+}
+
 // commonRestIterator implements an iterator for the REST API that can be extended to be used
 // across multiple object types.
 type commonRestIterator struct {
@@ -27,11 +31,11 @@ type commonRestIterator struct {
 	current		interface{}
 	err			error
 
-	impl types.CommonIteratorImpl
+	impl restIteratorImpl
 }
 
 // NewCommonRestIterator returns a new commonRestIterator for use in composing a usable object iterator.
-func NewCommonRestIterator(transport *SawtoothClientTransportRest, nextUrl *url.URL, impl types.CommonIteratorImpl) *commonRestIterator {
+func NewCommonRestIterator(transport *SawtoothClientTransportRest, nextUrl *url.URL, impl restIteratorImpl) *commonRestIterator {
 	return &commonRestIterator{transport: transport, nextUrl: nextUrl, impl: impl}
 }
 

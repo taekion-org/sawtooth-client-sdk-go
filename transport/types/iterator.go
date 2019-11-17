@@ -6,11 +6,6 @@ type CommonIterator interface {
 	Error() error
 }
 
-// CommonIteratorImpl is an interface that must be implemented by all extenders of CommonIterator.
-type CommonIteratorImpl interface {
-	UnmarshalData(bytes []byte) ([]interface{}, error)
-}
-
 // BlockIterator is an interface that represents an iterator over blocks.
 type BlockIterator interface {
 	CommonIterator
