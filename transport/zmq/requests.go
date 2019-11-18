@@ -21,5 +21,7 @@ func (self *SawtoothClientTransportZmq) doZmqRequest(t validator_pb2.Message_Mes
 		return err
 	}
 
+	// TODO: We need code here to match common errors and generate error objects
+
 	return nil
 }
