@@ -4,7 +4,7 @@ package types
 type BlockHeader struct {
 	BatchIds			[]string	`json:"block_ids"`
 	BlockNum			string		`json:"block_num"`
-	Consensus			string		`json:"consensus"`
+	Consensus			[]byte		`json:"consensus"`
 	PreviousBlockId		string		`json:"previous_block_id"`
 	SignerPublicKey		string		`json:"signer_public_key"`
 	StateRootHash		string		`json:"state_root_hash"`

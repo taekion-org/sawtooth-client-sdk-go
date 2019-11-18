@@ -17,5 +17,5 @@ type TransactionHeader struct {
 type Transaction struct {
 	Header				TransactionHeader	`json:"header"`
 	HeaderSignature		string				`json:"header_signature"`
-	Payload				string				`json:"payload"`
+	Payload				[]byte				`json:"payload"`
 }
