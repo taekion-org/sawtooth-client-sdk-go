@@ -12,6 +12,8 @@ import (
 )
 
 const DEFAULT_REST_URL = "http://localhost:8008"
+const DEFAULT_ZMQ_URL = "tcp://localhost:4004"
+const DEFAULT_TRANSPORT = "rest"
 const DEFAULT_WAIT_TIME = 5
 
 const CMD_LIST = "list"
@@ -26,17 +28,28 @@ var intkeyClient *intkey.IntkeyClient
 
 func main() {
 	var err error
-	var url *string = flag.String("url", DEFAULT_REST_URL, "Sawtooth REST API URL")
+	var rest_url *string = flag.String("rest_url", DEFAULT_REST_URL, "Sawtooth REST API URL")
+	var zmq_url *string = flag.String("zmq_url", DEFAULT_ZMQ_URL, "Sawtooth ZMQ URL")
 	var keyFile *string = flag.String("keyfile", "", "Sawtooth Private Key File")
+	var transport *string = flag.String("transport", DEFAULT_TRANSPORT, "Sawtooth Transport")
 	flag.Parse()
 
-	intkeyClient, err = intkey.NewIntkeyClient(*url, *keyFile)
-	if err != nil {
-		handleError(err)
+	if *transport == "rest" {
+		intkeyClient, err = intkey.NewIntkeyClient(*rest_url, *keyFile)
+		if err != nil {
+			handleError(err)
+		}
+	} else if *transport == "zmq" {
+		intkeyClient, err = intkey.NewIntkeyClientZmq(*zmq_url, *keyFile)
+		if err != nil {
+			handleError(err)
+		}
+	} else {
+		handleError(fmt.Errorf("Invalid transport"))
 	}
 
 	if flag.NArg() == 0 {
-		fmt.Printf("Usage: %s list|show|set|inc|dec|status [params] {--url [URL]} {--wait [wait_time]}\n", os.Args[0])
+		fmt.Printf("Usage: %s list|show|set|inc|dec|status [params] {--url [URL]} {--wait [wait_time]} {--transport [rest|zmq]}\n", os.Args[0])
 		os.Exit(0)
 	}
 

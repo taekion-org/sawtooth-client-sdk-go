@@ -40,6 +40,27 @@ func NewIntkeyClient(url string, keyFile string) (*IntkeyClient, error) {
 	return client, nil
 }
 
+// NewIntkeyClient returns a new instance of IntkeyClient that uses the ZMQ transport.
+func NewIntkeyClientZmq(url string, keyFile string) (*IntkeyClient, error) {
+	args := &sawtooth_client_sdk_go.SawtoothClientArgs{
+		URL: url,
+		KeyFile: keyFile,
+		TransportType: transport.TRANSPORT_ZMQ,
+		Impl: &IntkeyClientImpl{},
+	}
+
+	sawtoothClient, err := sawtooth_client_sdk_go.NewClient(args)
+	if err != nil {
+		return nil, err
+	}
+
+	client := &IntkeyClient{
+		SawtoothClient: sawtoothClient,
+	}
+
+	return client, nil
+}
+
 // List returns the current mapping of keys to values.
 func (self *IntkeyClient) List() (map[string]uint, error) {
 	addressPrefix := GetAddressPrefix()
