@@ -77,7 +77,7 @@ func (self *SawtoothClientTransportZmq) GetBlockIterator(fetch int, reverse bool
 
 	sortControl := []*client_list_control_pb2.ClientSortControls{
 		{
-			Keys: []string{"default"},
+			Keys: []string{"block_num"},
 			Reverse: reverse,
 		},
 	}
