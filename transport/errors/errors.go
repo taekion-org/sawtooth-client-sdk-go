@@ -9,6 +9,9 @@ import (
 type SawtoothTransportErrorCode uint
 
 const (
+	NO_ERROR						SawtoothTransportErrorCode		= 0
+	UNKNOWN_ERROR					SawtoothTransportErrorCode		= 1024
+
 	VALIDATOR_UNKNOWN_ERROR			SawtoothTransportErrorCode		= 10
 	VALIDATOR_NOT_READY				SawtoothTransportErrorCode		= 15
 	VALIDATOR_TIMED_OUT				SawtoothTransportErrorCode		= 17
@@ -16,6 +19,7 @@ const (
 	VALIDATOR_INVALID_RESPONSE		SawtoothTransportErrorCode		= 20
 
 	BATCH_STATUS_UNAVAILABLE		SawtoothTransportErrorCode		= 27
+	BATCH_INVALID					SawtoothTransportErrorCode		= 30
 	BATCH_UNABLE_TO_ACCEPT			SawtoothTransportErrorCode		= 31
 	BATCH_NONE_SUBMITTED			SawtoothTransportErrorCode		= 34
 	BATCH_PROTOBUF_NOT_DECODABLE	SawtoothTransportErrorCode		= 35
