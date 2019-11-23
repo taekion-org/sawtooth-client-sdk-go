@@ -12,16 +12,23 @@ func (self *SawtoothClientTransportZmq) doZmqRequest(t validator_pb2.Message_Mes
 		return err
 	}
 
-	corrId, err := self.Connection.SendNewMsg(t, requestMsg)
+	connection, err := self.getConnection()
 	if err != nil {
 		return err
 	}
 
-	_, responseMsg, err := self.Connection.RecvMsgWithId(corrId)
+	corrId, err := connection.SendNewMsg(t, requestMsg)
+	if err != nil {
+		return err
+	}
+
+	_, responseMsg, err := connection.RecvMsgWithId(corrId)
 	err = proto.Unmarshal(responseMsg.GetContent(), response)
 	if err != nil {
 		return err
 	}
+
+	self.putConnection(connection)
 
 	errorCode := checkForError(response)
 	if errorCode != errors.NO_ERROR {
