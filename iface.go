@@ -14,4 +14,5 @@ type SawtoothClientImpl interface {
 
 	GetPayloadInputAddresses(payload interface{}) []string
 	GetPayloadOutputAddresses(payload interface{}) []string
+	GetPayloadDependencies(payload interface{}) []string
 }

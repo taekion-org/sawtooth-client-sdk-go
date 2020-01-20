@@ -22,7 +22,7 @@ func (self *SawtoothClient) CreateTransaction(payload interface{}) (*transaction
 		FamilyVersion:    self.ClientImpl.GetFamilyVersion(),
 		Inputs:           self.ClientImpl.GetPayloadInputAddresses(payload),
 		Outputs:          self.ClientImpl.GetPayloadOutputAddresses(payload),
-		Dependencies:     []string{},
+		Dependencies:     self.ClientImpl.GetPayloadDependencies(payload),
 		PayloadSha512:    HexdigestByte(payloadEncoded),
 		BatcherPublicKey: self.Signer.GetPublicKey().AsHex(),
 		Nonce:            Hexdigest(time.Now().String()),
