@@ -43,7 +43,7 @@ func NewClient(args *SawtoothClientArgs) (*SawtoothClient, error) {
 	// Read the key
 	keyData, err := ioutil.ReadFile(keyFile)
 	if err != nil {
-		return nil, fmt.Errorf("Could not read private key from file")
+		return nil, fmt.Errorf("Could not read private key from file (%s) with error: %s", keyFile, err)
 	}
 	keyData = []byte(strings.TrimSpace(string(keyData)))
 
