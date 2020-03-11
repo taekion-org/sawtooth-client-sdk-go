@@ -47,3 +47,9 @@ func (self *IntkeyClientImpl) GetPayloadOutputAddresses(payload interface{}) []s
 	name := payload.(*IntkeyPayload).Name
 	return []string{GetAddress(name)}
 }
+
+// GetPayloadDependencies returns the IDs for any transactions that the given payload
+// depends on. For intkey, this is always an empty list.
+func (self *IntkeyClientImpl) GetPayloadDependencies(payload interface{}) []string {
+	return []string{}
+}
