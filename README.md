@@ -14,13 +14,14 @@ that lets application-specific client libraries avoid handling many of these imp
 What does it do?
 ----------------
 - Handles transaction/batch/batchlist construction and signing.
-- Provides a complete abstraction to the Sawtooth REST API.
-- Implements the REST API abstraction via a generalized "transport" abstraction, which can be adapted to other
-transports (e.g. ZMQ).
+- Provides a complete abstraction of the Sawtooth Validator interface.
+    - Implements this as a generalized "transport" abstraction.
+    - Two implementations of transport provided:
+        - REST API
+        - Direct ZMQ (0MQ) to the validator 
 
-
-How to use it?
---------------
+Getting Started
+---------------
 
 A application-specific client library needs to implement the following interface:
 
@@ -36,6 +37,7 @@ A application-specific client library needs to implement the following interface
     
         GetPayloadInputAddresses(payload interface{}) []string
         GetPayloadOutputAddresses(payload interface{}) []string
+        GetPayloadDependencies(payload interface{}) []string
     }
 
 
@@ -53,11 +55,11 @@ Once this is done, the library code can then construct an instance of the genera
     // Assume that this type implements the SawtoothClientImpl interface
     type AppSpecificClientImpl struct {}
     
-    func NewClient(url string, keyFile string) (*AppSpecificClient, error) {
+    func NewAppSpecificClient(url string, keyFile string) (*AppSpecificClient, error) {
         args := &sawtooth_client_sdk_go.SawtoothClientArgs{
             URL: url,
             KeyFile: keyFile,
-            TransportType: transport.TRANSPORT_REST,
+            TransportType: transport.TRANSPORT_REST,  // This can also be transport.TRANSPORT_ZMQ
             Impl: &AppSpecificClientImpl{},
         }
     
@@ -75,3 +77,8 @@ Once this is done, the library code can then construct an instance of the genera
 
 At this point, the basic structure of the client is in place. Application-specific logic and functionality
 can be implemented using the functions that the general library provides for executing transactions and queries.
+
+Example
+-------
+For a more complete example, see the `examples/intkey` example. This provides a more-or-less complete re-implementation
+of the `intkey` client utility using this SDK.
