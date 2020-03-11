@@ -1,6 +1,8 @@
 Sawtooth Client SDK for Go
 ======================================
 
+[![Documentation](https://godoc.org/github.com/taekion-org/sawtooth-client-sdk-go?status.svg)](http://godoc.org/github.com/taekion-org/sawtooth-client-sdk-go)
+
 This repo contains the Sawtooth Client SDK for Go (developed by Taekion).
 
 What is it for?
