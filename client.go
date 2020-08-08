@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"github.com/hyperledger/sawtooth-sdk-go/signing"
 	"github.com/taekion-org/sawtooth-client-sdk-go/transport"
-	"io/ioutil"
 	"net/url"
-	"strings"
 )
 
 // SawtoothClient represents the core functionality of a Sawtooth application client.
@@ -20,6 +18,7 @@ type SawtoothClient struct {
 // SawtoothClientArgs holds arguments required to initialize SawtoothClient.
 type SawtoothClientArgs struct {
 	URL				string
+	PrivateKey		signing.PrivateKey
 	KeyFile			string
 	Impl			SawtoothClientImpl
 	TransportType	transport.SawtoothClientTransportType
@@ -28,27 +27,31 @@ type SawtoothClientArgs struct {
 // NewClient constructs a new instance of the SawtoothClient.
 func NewClient(args *SawtoothClientArgs) (*SawtoothClient, error) {
 	var err error
+	var privateKey signing.PrivateKey
 
-	// Figure out which key to use
-	var keyFile string
-	if args.KeyFile == "" {
-		keyFile, err = getDefaultKeyFileName()
+	// Set up our private key for signing.
+	// If we are passed a private key directly, use it.
+	// Otherwise, load one from a file.
+	if args.PrivateKey != nil {
+		privateKey = args.PrivateKey
+	} else {
+		var keyFile string
+		if args.KeyFile == "" {
+			keyFile, err = getDefaultKeyFileName()
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			keyFile = args.KeyFile
+		}
+
+		privateKey, err = readPrivateKeyFromFile(keyFile)
 		if err != nil {
 			return nil, err
 		}
-	} else {
-		keyFile = args.KeyFile
 	}
 
-	// Read the key
-	keyData, err := ioutil.ReadFile(keyFile)
-	if err != nil {
-		return nil, fmt.Errorf("Could not read private key from file (%s) with error: %s", keyFile, err)
-	}
-	keyData = []byte(strings.TrimSpace(string(keyData)))
-
-	// Set up the key structures and signer
-	privateKey := signing.NewSecp256k1PrivateKey(keyData)
+	// Set up the crypto factory and signer
 	cryptoFactory := signing.NewCryptoFactory(signing.CreateContext("secp256k1"))
 	signer := cryptoFactory.NewSigner(privateKey)
 

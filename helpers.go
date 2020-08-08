@@ -3,6 +3,9 @@ package sawtooth_client_sdk_go
 import (
 	"crypto/sha512"
 	"encoding/hex"
+	"fmt"
+	"github.com/hyperledger/sawtooth-sdk-go/signing"
+	"io/ioutil"
 	"os/user"
 	"strings"
 )
@@ -29,4 +32,19 @@ func getDefaultKeyFileName() (string, error) {
 
 	keyFile := currentUser.HomeDir + "/.sawtooth/keys/" + currentUser.Username + ".priv"
 	return keyFile, nil
+}
+
+// readPrivateKeyFromFile reads a private key from a file and returns it as a PrivateKey object.
+func readPrivateKeyFromFile(path string) (signing.PrivateKey, error) {
+	// Read the key
+	keyData, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("Could not read private key from file (%s) with error: %s", path, err)
+	}
+
+	// Parse the key into a PrivateKey object.
+	keyData = []byte(strings.TrimSpace(string(keyData)))
+	privateKey := signing.NewSecp256k1PrivateKey(keyData)
+
+	return privateKey, nil
 }
