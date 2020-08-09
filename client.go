@@ -18,10 +18,10 @@ type SawtoothClient struct {
 // SawtoothClientArgs holds arguments required to initialize SawtoothClient.
 type SawtoothClientArgs struct {
 	URL				string
+	TransportType	transport.SawtoothClientTransportType
 	PrivateKey		signing.PrivateKey
 	KeyFile			string
 	Impl			SawtoothClientImpl
-	TransportType	transport.SawtoothClientTransportType
 }
 
 // NewClient constructs a new instance of the SawtoothClient.
