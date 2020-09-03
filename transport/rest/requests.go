@@ -2,7 +2,9 @@ package rest
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/taekion-org/sawtooth-client-sdk-go/transport/errors"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -20,16 +22,38 @@ func (self *SawtoothClientTransportRest) resolveReference(relativeUrl *url.URL) 
 	return &newUrl
 }
 
+// buildRequest wraps http.NewRequest and sets up the headers as we require them.
+// In particular we set Accept to "application/json", and check the URL for authentication
+// information. If the username specified is "bearer", we add an Authorization header set to
+// "Bearer <value_of_password_field>".
+func (self *SawtoothClientTransportRest) buildRequest(method string, url *url.URL, body io.Reader) (*http.Request, error){
+	urlString := url.String()
+
+	request, err := http.NewRequest(http.MethodGet, urlString, body)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("Accept", "application/json")
+
+	authMethod := url.User.Username()
+	authSecret, authSecretPresent := url.User.Password()
+
+	if authMethod == "bearer" && authSecretPresent {
+		request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", authSecret))
+	}
+
+	return request, nil
+}
+
 // doGetRequest provides a generalized GET call to the REST API. Returns the response as
 // a []byte slice, or an error if something goes wrong.
 func (self *SawtoothClientTransportRest) doGetRequest(relativeUrl *url.URL) ([]byte, error) {
 	fullUrl := self.resolveReference(relativeUrl)
 
-	request, err := http.NewRequest(http.MethodGet, fullUrl.String(), nil)
+	request, err := self.buildRequest(http.MethodGet, fullUrl, nil)
 	if err != nil {
 		return nil, err
 	}
-	request.Header.Set("Accept", "application/json")
 
 	response, err := self.HttpClient.Do(request)
 	if err != nil {
@@ -70,11 +94,10 @@ func (self *SawtoothClientTransportRest) doPostRequestJson(relativeUrl *url.URL,
 func (self *SawtoothClientTransportRest) doPostRequest(relativeUrl *url.URL, data []byte, contentType string) ([]byte, error) {
 	fullUrl := self.resolveReference(relativeUrl)
 
-	request, err := http.NewRequest(http.MethodPost, fullUrl.String(), bytes.NewBuffer(data))
+	request, err := self.buildRequest(http.MethodPost, fullUrl, bytes.NewBuffer(data))
 	if err != nil {
 		return nil, err
 	}
-	request.Header.Set("Accept", "application/json")
 	request.Header.Set("Content-Type", contentType)
 
 	response, err := self.HttpClient.Do(request)
