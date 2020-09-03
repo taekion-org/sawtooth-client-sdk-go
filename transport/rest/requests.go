@@ -6,12 +6,24 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"path"
 )
+
+// resolveReference takes the base URL and combines it with the specified relativeUrl.
+// This works differently from the standard URL.ResolveReference() in that it always
+// adds the relativeUrl to the end of the base URL in the "right way".
+func (self *SawtoothClientTransportRest) resolveReference(relativeUrl *url.URL) *url.URL {
+	newUrl := *self.URL
+	newUrl.Path = path.Join(newUrl.Path, relativeUrl.Path)
+	newUrl.RawQuery = relativeUrl.RawQuery
+
+	return &newUrl
+}
 
 // doGetRequest provides a generalized GET call to the REST API. Returns the response as
 // a []byte slice, or an error if something goes wrong.
 func (self *SawtoothClientTransportRest) doGetRequest(relativeUrl *url.URL) ([]byte, error) {
-	fullUrl := self.URL.ResolveReference(relativeUrl)
+	fullUrl := self.resolveReference(relativeUrl)
 
 	request, err := http.NewRequest(http.MethodGet, fullUrl.String(), nil)
 	if err != nil {
@@ -56,7 +68,7 @@ func (self *SawtoothClientTransportRest) doPostRequestJson(relativeUrl *url.URL,
 // doPostRequest provides a generalized POST call to the REST API. Returns the response as
 // a []byte slice, or an error if something goes wrong.
 func (self *SawtoothClientTransportRest) doPostRequest(relativeUrl *url.URL, data []byte, contentType string) ([]byte, error) {
-	fullUrl := self.URL.ResolveReference(relativeUrl)
+	fullUrl := self.resolveReference(relativeUrl)
 
 	request, err := http.NewRequest(http.MethodPost, fullUrl.String(), bytes.NewBuffer(data))
 	if err != nil {
