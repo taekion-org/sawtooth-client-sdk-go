@@ -29,7 +29,7 @@ func (self *SawtoothClientTransportRest) resolveReference(relativeUrl *url.URL) 
 func (self *SawtoothClientTransportRest) buildRequest(method string, url *url.URL, body io.Reader) (*http.Request, error){
 	urlString := url.String()
 
-	request, err := http.NewRequest(http.MethodGet, urlString, body)
+	request, err := http.NewRequest(method, urlString, body)
 	if err != nil {
 		return nil, err
 	}
