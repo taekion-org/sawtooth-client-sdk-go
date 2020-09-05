@@ -39,7 +39,7 @@ func (self *SawtoothClientTransportRest) buildRequest(method string, url *url.UR
 	authSecret, authSecretPresent := url.User.Password()
 
 	if authMethod == "bearer" && authSecretPresent {
-		request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", authSecret))
+		request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", authSecret))
 	}
 
 	return request, nil
