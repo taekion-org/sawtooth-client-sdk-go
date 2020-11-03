@@ -9,19 +9,19 @@ import (
 )
 
 // ExecutePayload submits a single transaction to the blockchain and returns the batch id.
-func (self *SawtoothClient) ExecutePayload(payload interface{}) (string, error) {
-	payloads := []interface{}{payload}
+func (self *SawtoothClient) ExecutePayload(payload SawtoothPayload) (string, error) {
+	payloads := []SawtoothPayload{payload}
 	return self.ExecutePayloadBatch(payloads)
 }
 
 // ExecutePayloadSync submits a single transaction to the blockchain and waits for commit.
-func (self *SawtoothClient) ExecutePayloadSync(payload interface{}, timeout int, pollInterval int) error {
-	payloads := []interface{}{payload}
+func (self *SawtoothClient) ExecutePayloadSync(payload SawtoothPayload, timeout int, pollInterval int) error {
+	payloads := []SawtoothPayload{payload}
 	return self.ExecutePayloadBatchSync(payloads, timeout, pollInterval)
 }
 
 // ExecutePayload submits a list of transactions to the blockchain (as a single batch) and returns the batch id.
-func (self *SawtoothClient) ExecutePayloadBatch(payloads []interface{}) (string, error) {
+func (self *SawtoothClient) ExecutePayloadBatch(payloads []SawtoothPayload) (string, error) {
 	transactions := make([]*transaction_pb2.Transaction, len(payloads))
 
 	for i, payload := range payloads {
@@ -53,7 +53,7 @@ func (self *SawtoothClient) ExecutePayloadBatch(payloads []interface{}) (string,
 }
 
 // ExecutePayload submits a list of transactions to the blockchain (as a single batch) and waits for commit.
-func (self *SawtoothClient) ExecutePayloadBatchSync(payloads []interface{}, timeout int, pollInterval int) error {
+func (self *SawtoothClient) ExecutePayloadBatchSync(payloads []SawtoothPayload, timeout int, pollInterval int) error {
 	// Execute the payload
 	batchId, err := self.ExecutePayloadBatch(payloads)
 	if err != nil {

@@ -6,11 +6,10 @@ import (
 	"github.com/hyperledger/sawtooth-sdk-go/protobuf/batch_pb2"
 	"github.com/hyperledger/sawtooth-sdk-go/protobuf/transaction_pb2"
 	"strings"
-	"time"
 )
 
 // CreateTransaction constructs a single transaction from the provided payload.
-func (self *SawtoothClient) CreateTransaction(payload interface{}) (*transaction_pb2.Transaction, error) {
+func (self *SawtoothClient) CreateTransaction(payload SawtoothPayload) (*transaction_pb2.Transaction, error) {
 	payloadEncoded, err := self.ClientImpl.EncodePayload(payload)
 	if err != nil {
 		return nil, err
@@ -20,13 +19,14 @@ func (self *SawtoothClient) CreateTransaction(payload interface{}) (*transaction
 		SignerPublicKey:  self.Signer.GetPublicKey().AsHex(),
 		FamilyName:       self.ClientImpl.GetFamilyName(),
 		FamilyVersion:    self.ClientImpl.GetFamilyVersion(),
-		Inputs:           self.ClientImpl.GetPayloadInputAddresses(payload),
-		Outputs:          self.ClientImpl.GetPayloadOutputAddresses(payload),
-		Dependencies:     self.ClientImpl.GetPayloadDependencies(payload),
+		Inputs:           payload.GetInputAddresses(),
+		Outputs:          payload.GetOutputAddresses(),
+		Dependencies:     payload.GetDependencies(),
 		PayloadSha512:    HexdigestByte(payloadEncoded),
 		BatcherPublicKey: self.Signer.GetPublicKey().AsHex(),
-		Nonce:            Hexdigest(time.Now().String()),
+		Nonce:            payload.GetNonce(),
 	}
+
 	header, err := proto.Marshal(headerPB)
 	if err != nil {
 		return nil, err
