@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/taekion-org/sawtooth-client-sdk-go"
 	"github.com/taekion-org/sawtooth-client-sdk-go/transport"
+	"math/rand"
 )
 
 // IntkeyPayload represents a payload meant for the intkey transaction processor.
@@ -12,6 +13,44 @@ type IntkeyPayload struct {
 	Verb		string
 	Name		string
 	Value		uint
+
+	// deps contains a list of transaction dependencies (this is to demonstrate the GetDependencies() functionality.
+	deps		[]string
+
+	// nonce contains a pre-configured nonce, if any (this is to demonstrate the GetNonce() functionality.
+	nonce		string
+}
+
+func (self *IntkeyPayload) GetInputAddresses() []string {
+	return []string{GetAddress(self.Name)}
+}
+
+func (self *IntkeyPayload) GetOutputAddresses() []string {
+	return []string{GetAddress(self.Name)}
+}
+
+func (self *IntkeyPayload) GetDependencies() []string {
+	deps := make([]string, len(self.deps))
+	copy(deps, self.deps)
+	return deps
+}
+
+func (self *IntkeyPayload) GetNonce() string {
+	if self.nonce != "" {
+		return self.nonce
+	} else {
+		nonce := make([]byte, 64)
+		_, _ = rand.Read(nonce)
+		return sawtooth_client_sdk_go.HexdigestByte(nonce)
+	}
+}
+
+func (self *IntkeyPayload) AddDependency(transactionId string) {
+	self.deps = append(self.deps, transactionId)
+}
+
+func (self *IntkeyPayload) SetNonce(nonce string) {
+	self.nonce = nonce
 }
 
 // IntKeyClient is the client library for intkey.
