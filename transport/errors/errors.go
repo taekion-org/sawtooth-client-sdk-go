@@ -10,6 +10,7 @@ type SawtoothTransportErrorCode uint
 
 const (
 	NO_ERROR						SawtoothTransportErrorCode		= 0
+	REQUEST_ERROR					SawtoothTransportErrorCode		= 512
 	UNKNOWN_ERROR					SawtoothTransportErrorCode		= 1024
 
 	VALIDATOR_UNKNOWN_ERROR			SawtoothTransportErrorCode		= 10
@@ -41,11 +42,15 @@ const (
 // SawtoothClientTransportError represents an error returned by a SawtoothClientTransport
 // implementation.
 type SawtoothClientTransportError struct {
-	ErrorCode      SawtoothTransportErrorCode
-	TransportError error
+	ErrorCode   SawtoothTransportErrorCode
+	ErrorObject error
 }
 
 // Error implements the error interface for SawtoothClientTransportError.
 func (self *SawtoothClientTransportError) Error() string {
-	return fmt.Sprintf("Sawtooth Error: %d -- Transport Error: %s", self.ErrorCode, self.TransportError)
+	return fmt.Sprintf("Sawtooth Error - Code: %d -- Error: %s", self.ErrorCode, self.ErrorObject)
+}
+
+func NewSawtoothClientTransportRequestError(err error) error {
+	return &SawtoothClientTransportError{ErrorCode: REQUEST_ERROR, ErrorObject: err}
 }
