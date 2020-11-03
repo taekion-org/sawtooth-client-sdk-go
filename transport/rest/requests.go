@@ -52,12 +52,12 @@ func (self *SawtoothClientTransportRest) doGetRequest(relativeUrl *url.URL) ([]b
 
 	request, err := self.buildRequest(http.MethodGet, fullUrl, nil)
 	if err != nil {
-		return nil, err
+		return nil, errors.NewSawtoothClientTransportRequestError(err)
 	}
 
 	response, err := self.HttpClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, errors.NewSawtoothClientTransportRequestError(err)
 	}
 	defer response.Body.Close()
 
@@ -65,7 +65,7 @@ func (self *SawtoothClientTransportRest) doGetRequest(relativeUrl *url.URL) ([]b
 		transportError := NewSawtoothClientTransportRestError(response)
 		err = &errors.SawtoothClientTransportError{
 			ErrorCode:      errors.SawtoothTransportErrorCode(transportError.ErrorResponse.Error.Code),
-			TransportError: transportError,
+			ErrorObject:	transportError,
 		}
 
 		return nil, err
@@ -73,7 +73,7 @@ func (self *SawtoothClientTransportRest) doGetRequest(relativeUrl *url.URL) ([]b
 
 	responseData, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return nil, errors.NewSawtoothClientTransportRequestError(err)
 	}
 
 	return responseData, nil
@@ -96,13 +96,13 @@ func (self *SawtoothClientTransportRest) doPostRequest(relativeUrl *url.URL, dat
 
 	request, err := self.buildRequest(http.MethodPost, fullUrl, bytes.NewBuffer(data))
 	if err != nil {
-		return nil, err
+		return nil, errors.NewSawtoothClientTransportRequestError(err)
 	}
 	request.Header.Set("Content-Type", contentType)
 
 	response, err := self.HttpClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, errors.NewSawtoothClientTransportRequestError(err)
 	}
 	defer response.Body.Close()
 
@@ -110,7 +110,7 @@ func (self *SawtoothClientTransportRest) doPostRequest(relativeUrl *url.URL, dat
 		transportError := NewSawtoothClientTransportRestError(response)
 		err = &errors.SawtoothClientTransportError{
 			ErrorCode:      errors.SawtoothTransportErrorCode(transportError.ErrorResponse.Error.Code),
-			TransportError: transportError,
+			ErrorObject:	transportError,
 		}
 
 		return nil, err
@@ -118,7 +118,7 @@ func (self *SawtoothClientTransportRest) doPostRequest(relativeUrl *url.URL, dat
 
 	responseData, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return nil, err
+		return nil, errors.NewSawtoothClientTransportRequestError(err)
 	}
 
 	return responseData, nil
