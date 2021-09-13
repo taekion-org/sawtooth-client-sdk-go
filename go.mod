@@ -2,8 +2,6 @@ module github.com/taekion-org/sawtooth-client-sdk-go
 
 go 1.16
 
-replace github.com/hyperledger/sawtooth-sdk-go => github.com/taekion-org/sawtooth-sdk-go v0.1.4
-
 require (
 	github.com/brianolson/cbor_go v1.0.0
 	github.com/golang/protobuf v1.4.3
