@@ -4,11 +4,14 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
+	"os"
+	"strconv"
+	"time"
+
 	flag "github.com/spf13/pflag"
 	"github.com/taekion-org/sawtooth-client-sdk-go/examples/intkey"
 	"github.com/taekion-org/sawtooth-client-sdk-go/transport/errors"
-	"os"
-	"strconv"
 )
 
 const DEFAULT_REST_URL = "http://localhost:8008"
@@ -71,6 +74,11 @@ func main() {
 	}
 }
 
+func init() {
+	// initialize RNG
+	rand.Seed(time.Now().Unix())
+}
+
 func cmdList() {
 	list, err := intkeyClient.List()
 	if err != nil {
@@ -109,7 +117,7 @@ func cmdSet() {
 	}
 
 	existingValue, err := intkeyClient.Show(key)
-	if err == nil  {
+	if err == nil {
 		handleError(fmt.Errorf("Error: key %s already exists with value %d", key, existingValue))
 	}
 
