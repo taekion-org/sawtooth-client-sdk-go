@@ -178,7 +178,7 @@ func cmdStatus() {
 }
 
 func cmdInvalid() {
-	handleError(fmt.Errorf("Error: '%s is an invalid command", flag.Arg(1)))
+	handleError(fmt.Errorf("Error: '%s' is an invalid command", flag.Arg(0)))
 }
 
 func printBatchInfo(batchId string) {
