@@ -3,7 +3,7 @@ Sawtooth Client SDK for Go
 
 [![Documentation](https://godoc.org/github.com/taekion-org/sawtooth-client-sdk-go?status.svg)](http://godoc.org/github.com/taekion-org/sawtooth-client-sdk-go)
 
-This repo contains the Sawtooth Client SDK for Go (developed by Taekion).
+This repo contains the Sawtooth Client SDK for Go (developed by Taekion). The Taekion Blockchain supports dynamic consensus via plug-ins.  Our TFS Lite Client uses a customized consensus algorithm to integrated with the Hedera Consensus Service (HCS).  
 
 What is it for?
 ---------------
