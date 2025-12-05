@@ -7,6 +7,6 @@ require (
 	github.com/golang/protobuf v1.4.3
 	github.com/hyperledger/sawtooth-sdk-go v0.1.4
 	github.com/pebbe/zmq4 v1.2.7
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.8.3
 	github.com/spf13/pflag v1.0.5
 )
